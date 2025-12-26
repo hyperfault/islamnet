@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IslamNet | Divine Knowledge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Cinzel:wght@700&family=Almarai:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root { --accent: #ffffff; --bg: #000000; --msg-user: #1a1a1a; }
+        * { box-sizing: border-box; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Montserrat', sans-serif; height: 100%; overflow: hidden; }
+        .stars { position: fixed; width: 100%; height: 100%; z-index: -1; background: radial-gradient(ellipse at bottom, #1B2735 0%, #000 100%); }
+        .stars::after { content: ""; position: absolute; top: 0; left: 0; width: 2px; height: 2px; background: white; box-shadow: 10vw 20vh 1px white, 50vw 40vh 1.5px white, 80vw 10vh 1px white, 20vw 80vh 1.5px white; animation: twinkle 4s infinite; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.9; } }
+        .container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1); padding: 20px; }
+        .logo { font-family: 'Cinzel', serif; font-size: 3.5rem; letter-spacing: 12px; margin-bottom: 30px; transition: 0.8s; text-align: center; }
+        .search-wrapper { width: 100%; max-width: 500px; height: 60px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 30px; display: flex; align-items: center; padding: 0 15px 0 25px; transition: all 0.6s ease; position: relative; }
+        input { flex: 1; background: none; border: none; color: white; font-size: 1.1rem; outline: none; font-family: 'Montserrat'; }
+        .send-btn { background: white; color: black; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; margin-left: 10px; }
+        body.active .container { justify-content: flex-start; padding-top: 40px; }
+        body.active .logo { font-size: 1.5rem; letter-spacing: 4px; margin-bottom: 20px; }
+        body.active .search-wrapper { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); max-width: 800px; background: #111; z-index: 100; border-radius: 15px; }
+        #chat-ui { display: none; width: 100%; max-width: 800px; flex: 1; overflow-y: auto; padding-bottom: 120px; flex-direction: column; gap: 20px; scroll-behavior: smooth; }
+        body.active #chat-ui { display: flex; }
+        .msg { max-width: 85%; padding: 10px 20px; border-radius: 18px; line-height: 1.6; animation: slideUp 0.4s ease forwards; }
+        .user { align-self: flex-end; background: var(--msg-user); border: 1px solid #333; }
+        .ai { align-self: flex-start; border-left: 1px solid #444; padding-left: 20px; color: #d0d0d0; }
+        .ai h1, .ai h2, .ai h3 { font-size: 1.1rem; margin: 10px 0; color: white; }
+        .arabic { font-family: 'Almarai', sans-serif; font-size: 1.3rem; display: block; margin: 10px 0; direction: rtl; color: #fff; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="container">
+        <div class="logo">ISLAMNET</div>
+        <div id="chat-ui"></div>
+        <div class="search-wrapper">
+            <input type="text" id="userInput" placeholder="Ask a question..." onkeypress="if(event.key==='Enter') startChat()">
+            <button class="send-btn" onclick="startChat()">➔</button>
+        </div>
+    </div>
+    <script>
+        async function startChat() {
+            const input = document.getElementById('userInput');
+            const chatUi = document.getElementById('chat-ui');
+            const text = input.value.trim();
+            if(!text) return;
+            if(!document.body.classList.contains('active')) document.body.classList.add('active');
+            chatUi.innerHTML += `<div class="msg user">${text}</div>`;
+            input.value = "";
+            chatUi.scrollTop = chatUi.scrollHeight;
+            try {
+                // FETCHING FROM VERCEL API
+                const response = await fetch("/api/ask", {
+                    method: "POST",
+                    body: JSON.stringify({ prompt: text })
+                });
+                const data = await response.json();
+                const cleanReply = marked.parse(data.choices[0].message.content);
+                chatUi.innerHTML += `<div class="msg ai">${cleanReply}</div>`;
+            } catch (e) {
+                chatUi.innerHTML += `<div class="msg ai" style="color:red">Error. Check Vercel Logs.</div>`;
+            }
+            chatUi.scrollTop = chatUi.scrollHeight;
+        }
+    </script>
+</body>
+</html>
