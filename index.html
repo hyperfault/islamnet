@@ -2,17 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    
-    <title>IslamNet | Digital Islamic Suite</title>
-    <meta name="title" content="IslamNet | Digital Islamic Suite">
-    <meta name="description" content="A premium Islamic dashboard featuring AI chat, Hijri calendar, prayer times, and Quran study tools.">
-
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://your-actual-link.vercel.app/">
-    <meta property="og:title" content="IslamNet | Digital Islamic Suite">
-    <meta property="og:description" content="Access Quran, Hadith, and Prayer times in a modern glassmorphism interface.">
-    <meta property="og:image" content="Logo.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IslamNet</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Amiri&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
@@ -32,32 +23,27 @@
         @keyframes glow-pulse { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.4); } }
 
         /* APP SHELL */
-        .app-shell { height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 10px 0; }
-        .brand-header { font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; margin-bottom: 10px; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+        .app-shell { height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 15px 0; }
+        .brand-header { font-weight: 800; font-size: 1.8rem; letter-spacing: -1px; margin-bottom: 15px; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
 
-        /* WINDOW - MOBILE OPTIMIZED HEIGHT */
+        /* WINDOW */
         .content-window { 
-            width: 96%; max-width: 1500px; height: 76vh; 
+            width: 96%; max-width: 1500px; height: 84vh; 
             background: var(--glass-bg); backdrop-filter: blur(45px); -webkit-backdrop-filter: blur(45px);
             border: 1px solid var(--glass-border); border-radius: 25px; 
             overflow: hidden; position: relative;
         }
 
-        /* VIEW - ADDED PADDING TO FIX OVERLAP */
-        .view { 
-            display: none; height: 100%; width: 100%; padding: 25px; 
-            overflow-y: auto; 
-            padding-bottom: 100px; /* Space for the floating nav bar */
-        }
+        .view { display: none; height: 100%; width: 100%; padding: 30px; overflow-y: auto; }
         .view.active { display: block; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* PRAYER UI - RESPONSIVE GRID */
+        /* PRAYER UI */
         .prayer-header { text-align: center; margin-bottom: 30px; }
-        .next-prayer-time { font-size: 3rem; font-weight: 400; margin: 10px 0; letter-spacing: -2px; }
-        .prayer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
-        .p-card { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; text-align: center; border: 1px solid var(--glass-border); }
-        .p-card b { display: block; font-size: 1.3rem; margin-top: 8px; }
+        .next-prayer-time { font-size: 3.5rem; font-weight: 400; margin: 10px 0; letter-spacing: -2px; }
+        .prayer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+        .p-card { background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; text-align: center; border: 1px solid var(--glass-border); }
+        .p-card b { display: block; font-size: 1.4rem; margin-top: 8px; }
 
         /* QUOTE UI */
         .quote-box { background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); padding: 40px; border-radius: 25px; margin-bottom: 20px; text-align: center; }
@@ -70,23 +56,17 @@
         .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 12px; font-weight: 600; }
         .cal-day.today { background: white; color: black; box-shadow: 0 0 20px white; }
 
-        /* NAV BAR - MOBILE OPTIMIZED */
-        .nav-wrapper { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); z-index: 1000; width: 92%; max-width: 600px; }
-        .tab-bar { 
-            background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(25px); 
-            border: 1px solid var(--glass-border); border-radius: 50px; 
-            padding: 5px; display: flex; gap: 4px;
-            overflow-x: auto; scrollbar-width: none;
-        }
-        .tab-bar::-webkit-scrollbar { display: none; }
-        .tab { padding: 12px 18px; border-radius: 40px; cursor: pointer; font-size: 0.6rem; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; white-space: nowrap; }
+        /* NAV BAR */
+        .nav-wrapper { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); z-index: 1000; }
+        .tab-bar { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 50px; padding: 6px; display: flex; gap: 4px; }
+        .tab { padding: 12px 20px; border-radius: 40px; cursor: pointer; font-size: 0.65rem; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; }
         .tab.active { background: white; color: black; }
 
         /* CHAT UI */
-        #chat-ui { display: flex; flex-direction: column; gap: 15px; padding-bottom: 80px; }
-        .msg { padding: 18px; border-radius: 15px; max-width: 85%; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.03); }
-        .input-area { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 700px; }
-        .input-area input { width: 100%; padding: 16px 25px; border-radius: 40px; background: #000; color: #fff; border: 1px solid var(--glass-border); outline: none; }
+        #chat-ui { display: flex; flex-direction: column; gap: 15px; padding-bottom: 100px; }
+        .msg { padding: 18px; border-radius: 15px; max-width: 80%; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.03); }
+        .input-area { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 700px; }
+        .input-area input { width: 100%; padding: 18px 25px; border-radius: 40px; background: #000; color: #fff; border: 1px solid var(--glass-border); outline: none; }
         
         iframe { width: 100%; height: 100%; border: none; }
     </style>
@@ -107,14 +87,14 @@
                 <div class="prayer-header">
                     <p id="city-display" style="opacity:0.6;">Select Location</p>
                     <h1 class="next-prayer-time" id="main-clock">--:--</h1>
-                    <div style="display:flex; gap:10px; justify-content:center; margin-bottom:30px; flex-wrap: wrap;">
-                        <input type="text" id="cityInput" placeholder="City..." style="background:black; border:1px solid var(--glass-border); color:white; padding:10px; border-radius:10px; width: 120px;">
+                    <div style="display:flex; gap:10px; justify-content:center; margin-bottom:30px;">
+                        <input type="text" id="cityInput" placeholder="City..." style="background:black; border:1px solid var(--glass-border); color:white; padding:10px; border-radius:10px;">
                         <select id="methodSelect" style="background:black; border:1px solid var(--glass-border); color:white; padding:10px; border-radius:10px;">
                             <option value="2">ISNA</option>
-                            <option value="3">MWL</option>
+                            <option value="3">Muslim World League</option>
                             <option value="4">Umm al-Qura</option>
                         </select>
-                        <button onclick="getPrayers()" style="background:white; color:black; border:none; padding:10px 20px; border-radius:10px; font-weight:700; cursor:pointer;">FIND</button>
+                        <button onclick="getPrayers()" style="background:white; color:black; border:none; padding:0 20px; border-radius:10px; font-weight:700; cursor:pointer;">FIND</button>
                     </div>
                 </div>
                 <div id="prayer-grid" class="prayer-grid"></div>
